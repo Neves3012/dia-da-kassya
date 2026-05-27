@@ -2,7 +2,11 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
   <title>Dia da Kassya 🌙</title>
 
   <link rel="stylesheet" href="style.css">
@@ -15,79 +19,235 @@
 
     <header class="hero">
       <h1>🌙 Dia da Kassya</h1>
+
       <p class="subtitle">
         um lembretinho aconchegante pra hoje 💛
       </p>
     </header>
 
     <section class="progress-card">
+
       <div class="progress-header">
         <span>Progresso do dia</span>
-        <span id="progressText">0%</span>
+        <span id="progressText">
+          0%
+        </span>
       </div>
 
       <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
-    </section>
-
-    <section class="agenda" id="agenda">
-
-      <div class="card">
-        <input type="checkbox" class="task-checkbox">
-
-        <div class="task-content">
-          <span class="time">11:00 → 13:00</span>
-          <h2>💊 Tomar os remédios</h2>
-          <p>cuida de você, amorrr 🌙</p>
-        </div>
-      </div>
-
-      <div class="card">
-        <input type="checkbox" class="task-checkbox">
-
-        <div class="task-content">
-          <span class="time">A definir</span>
-          <h2>🏍️ Mandar mensagem pra Yamaha</h2>
-          <p>não esquecer isso hein 😠💛</p>
-        </div>
-      </div>
-
-      <div class="card">
-        <input type="checkbox" class="task-checkbox">
-
-        <div class="task-content">
-          <span class="time">13:00</span>
-          <h2>🩺 Consulta com Bruna</h2>
-          <p>vai dar tudo certinho ✨</p>
-        </div>
-      </div>
-
-      <div class="card">
-        <input type="checkbox" class="task-checkbox">
-
-        <div class="task-content">
-          <span class="time">15:00</span>
-          <h2>💼 Entrevista</h2>
-          <p>você consegue, confia 😌</p>
-        </div>
-      </div>
-
-      <div class="card">
-        <input type="checkbox" class="task-checkbox">
-
-        <div class="task-content">
-          <span class="time">20:00 → 20:30</span>
-          <h2>🌙💊 Tomar os remédios</h2>
-          <p>hora do cuidado noturno 💛</p>
-        </div>
+        <div
+          class="progress-fill"
+          id="progressFill"
+        ></div>
       </div>
 
     </section>
 
-    <button id="addTaskBtn" class="add-task-btn">
+    <!-- LISTA DE TAREFAS -->
+    <section
+      class="agenda"
+      id="agenda"
+    >
+
+      <div class="card">
+
+        <input
+          type="checkbox"
+          class="task-checkbox"
+        >
+
+        <div class="task-content">
+
+          <span class="time">
+            11:00 → 13:00
+          </span>
+
+          <h2>
+            💊 Tomar os remédios
+          </h2>
+
+          <p>
+            cuida de você, amorrr 🌙
+          </p>
+
+        </div>
+      </div>
+
+      <div class="card">
+
+        <input
+          type="checkbox"
+          class="task-checkbox"
+        >
+
+        <div class="task-content">
+
+          <span class="time">
+            A definir
+          </span>
+
+          <h2>
+            🏍️ Mandar mensagem pra Yamaha
+          </h2>
+
+          <p>
+            não esquecer isso hein 😠💛
+          </p>
+
+        </div>
+      </div>
+
+      <div class="card">
+
+        <input
+          type="checkbox"
+          class="task-checkbox"
+        >
+
+        <div class="task-content">
+
+          <span class="time">
+            13:00
+          </span>
+
+          <h2>
+            🩺 Consulta com Bruna
+          </h2>
+
+          <p>
+            vai dar tudo certinho ✨
+          </p>
+
+        </div>
+      </div>
+
+      <div class="card">
+
+        <input
+          type="checkbox"
+          class="task-checkbox"
+        >
+
+        <div class="task-content">
+
+          <span class="time">
+            15:00
+          </span>
+
+          <h2>
+            💼 Entrevista
+          </h2>
+
+          <p>
+            você consegue, confia 😌
+          </p>
+
+        </div>
+      </div>
+
+      <div class="card">
+
+        <input
+          type="checkbox"
+          class="task-checkbox"
+        >
+
+        <div class="task-content">
+
+          <span class="time">
+            20:00 → 20:30
+          </span>
+
+          <h2>
+            🌙💊 Tomar os remédios
+          </h2>
+
+          <p>
+            hora do cuidado noturno 💛
+          </p>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- BOTÃO -->
+    <button
+      id="addTaskBtn"
+      class="add-task-btn"
+    >
       ✨ adicionar compromisso
     </button>
+
+    <!-- MODAL -->
+    <div
+      id="taskModal"
+      class="modal hidden"
+    >
+
+      <div class="modal-card">
+
+        <button
+          id="closeModal"
+          class="close-btn"
+        >
+          ✕
+        </button>
+
+        <h2 class="modal-title">
+          🌙 compromisso
+        </h2>
+
+        <label>
+          Horário
+        </label>
+
+        <input
+          id="taskTime"
+          type="text"
+          placeholder="13:00"
+        >
+
+        <label>
+          Compromisso
+        </label>
+
+        <input
+          id="taskTitle"
+          type="text"
+          placeholder="Consulta"
+        >
+
+        <label>
+          Mensagem fofinha
+        </label>
+
+        <textarea
+          id="taskMessage"
+          placeholder="vai dar tudo certo 💛"
+        ></textarea>
+
+        <div class="modal-actions">
+
+          <button
+            id="deleteTask"
+            class="delete-btn"
+          >
+            🗑 apagar
+          </button>
+
+          <button
+            id="saveTask"
+            class="save-btn"
+          >
+            💛 salvar
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
 
     <footer class="footer-love">
       feito com carinho pra Kassya ☕💛
@@ -96,5 +256,6 @@
   </main>
 
   <script src="script.js"></script>
+
 </body>
 </html>
