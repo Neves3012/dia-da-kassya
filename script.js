@@ -1,5 +1,8 @@
-const checkboxes =
-document.querySelectorAll(".task-checkbox");
+const agenda =
+document.getElementById("agenda");
+
+const addTaskBtn =
+document.getElementById("addTaskBtn");
 
 const progressFill =
 document.getElementById("progressFill");
@@ -7,21 +10,85 @@ document.getElementById("progressFill");
 const progressText =
 document.getElementById("progressText");
 
-checkboxes.forEach(box=>{
-  box.addEventListener("change", updateProgress);
-});
+function saveTasks(){
+  localStorage.setItem(
+    "kassyaTasks",
+    agenda.innerHTML
+  );
+}
+
+function loadTasks(){
+
+  const saved =
+  localStorage.getItem(
+    "kassyaTasks"
+  );
+
+  if(saved){
+    agenda.innerHTML = saved;
+  }
+
+  attachEvents();
+}
+
+function attachEvents(){
+
+  const checkboxes =
+  document.querySelectorAll(
+    ".task-checkbox"
+  );
+
+  checkboxes.forEach(box=>{
+    box.addEventListener(
+      "change",
+      ()=>{
+        updateProgress();
+        saveTasks();
+      }
+    );
+  });
+
+  document
+  .querySelectorAll(".editable")
+  .forEach(input=>{
+    input.addEventListener(
+      "input",
+      saveTasks
+    );
+  });
+
+  document
+  .querySelectorAll(".delete-btn")
+  .forEach(btn=>{
+    btn.onclick=()=>{
+      btn.closest(".card").remove();
+      updateProgress();
+      saveTasks();
+    };
+  });
+
+  updateProgress();
+}
 
 function updateProgress(){
+
+  const checkboxes =
+  document.querySelectorAll(
+    ".task-checkbox"
+  );
 
   const checked =
   document.querySelectorAll(
     ".task-checkbox:checked"
   ).length;
 
-  const total = checkboxes.length;
+  const total =
+  checkboxes.length || 1;
 
   const percent =
-  Math.round((checked / total) * 100);
+  Math.round(
+    (checked / total) * 100
+  );
 
   progressFill.style.width =
   percent + "%";
@@ -30,9 +97,55 @@ function updateProgress(){
   percent + "%";
 }
 
+addTaskBtn.addEventListener(
+"click",
+()=>{
+
+agenda.insertAdjacentHTML(
+"beforeend",
+`
+<div class="card">
+
+<input
+type="checkbox"
+class="task-checkbox">
+
+<div class="task-content">
+
+<input
+class="editable time"
+placeholder="Horário">
+
+<input
+class="editable"
+placeholder="Compromisso">
+
+<input
+class="editable"
+placeholder="Mensagem fofinha">
+
+<button class="delete-btn">
+🗑 apagar
+</button>
+
+</div>
+</div>
+`
+);
+
+attachEvents();
+saveTasks();
+
+});
+
 async function askPermission(){
-  if(Notification.permission !== "granted"){
-    await Notification.requestPermission();
+
+  if(
+  Notification.permission
+  !=="granted"
+  ){
+    await Notification
+    .requestPermission();
   }
 }
 
@@ -40,10 +153,16 @@ askPermission();
 
 function sendNotification(text){
 
-  if(Notification.permission==="granted"){
-    new Notification("🌙 Dia da Kassya",{
-      body:text
-    });
+  if(
+  Notification.permission
+  ==="granted"
+  ){
+    new Notification(
+      "🌙 Dia da Kassya",
+      {
+        body:text
+      }
+    );
   }
 }
 
@@ -68,18 +187,24 @@ text:"🌙💊 remédios da noiteee amor"
 
 setInterval(()=>{
 
-const now = new Date();
+const now =
+new Date();
 
 const current =
-`${String(now.getHours())
-.padStart(2,'0')}:${String(
-now.getMinutes())
-.padStart(2,'0')}`;
+`${String(
+now.getHours()
+).padStart(2,'0')}:${String(
+now.getMinutes()
+).padStart(2,'0')}`;
 
 reminders.forEach(r=>{
-  if(current===r.time){
-    sendNotification(r.text);
-  }
+
+if(current===r.time){
+sendNotification(r.text);
+}
+
 });
 
 },30000);
+
+loadTasks();
