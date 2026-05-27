@@ -1,0 +1,104 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  background:
+    radial-gradient(circle at top, #6f4b35 0%, #251813 60%);
+
+  min-height:100vh;
+  color:#f4dfc8;
+  font-family: Arial, sans-serif;
+  padding:24px;
+}
+
+.container{
+  max-width:420px;
+  margin:auto;
+}
+
+.hero{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.hero h1{
+  font-size:2rem;
+  margin-bottom:8px;
+}
+
+.subtitle{
+  opacity:.8;
+}
+
+.progress-card{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:24px;
+  padding:18px;
+  margin-bottom:22px;
+  backdrop-filter: blur(8px);
+}
+
+.progress-header{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+
+.progress-bar{
+  height:12px;
+  background:#2b1d18;
+  border-radius:999px;
+  overflow:hidden;
+}
+
+.progress-fill{
+  width:0%;
+  height:100%;
+  background:#d7a15b;
+  transition:.4s;
+}
+
+.agenda{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.card{
+  display:flex;
+  gap:14px;
+  background:rgba(255,255,255,.06);
+  border-radius:26px;
+  padding:20px;
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.card h2{
+  font-size:1rem;
+  margin-top:6px;
+}
+
+.card p{
+  margin-top:6px;
+  opacity:.7;
+}
+
+.time{
+  color:#ffcb8f;
+}
+
+.task-checkbox{
+  width:24px;
+  height:24px;
+  margin-top:5px;
+}
+
+.footer-love{
+  text-align:center;
+  margin-top:26px;
+  opacity:.7;
+}
