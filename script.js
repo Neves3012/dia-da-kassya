@@ -17,6 +17,45 @@ function saveTasks(){
   );
 }
 
+function makeEditable(){
+
+  document
+  .querySelectorAll(".time")
+  .forEach(el=>{
+
+    el.contentEditable = true;
+
+    el.addEventListener(
+      "input",
+      saveTasks
+    );
+  });
+
+  document
+  .querySelectorAll(".task-content h2")
+  .forEach(el=>{
+
+    el.contentEditable = true;
+
+    el.addEventListener(
+      "input",
+      saveTasks
+    );
+  });
+
+  document
+  .querySelectorAll(".task-content p")
+  .forEach(el=>{
+
+    el.contentEditable = true;
+
+    el.addEventListener(
+      "input",
+      saveTasks
+    );
+  });
+}
+
 function loadTasks(){
 
   const saved =
@@ -39,6 +78,7 @@ function attachEvents(){
   );
 
   checkboxes.forEach(box=>{
+
     box.addEventListener(
       "change",
       ()=>{
@@ -49,23 +89,20 @@ function attachEvents(){
   });
 
   document
-  .querySelectorAll(".editable")
-  .forEach(input=>{
-    input.addEventListener(
-      "input",
-      saveTasks
-    );
-  });
-
-  document
   .querySelectorAll(".delete-btn")
   .forEach(btn=>{
+
     btn.onclick=()=>{
-      btn.closest(".card").remove();
+
+      btn.closest(".card")
+      .remove();
+
       updateProgress();
       saveTasks();
     };
   });
+
+  makeEditable();
 
   updateProgress();
 }
@@ -112,17 +149,19 @@ class="task-checkbox">
 
 <div class="task-content">
 
-<input
-class="editable time"
-placeholder="Horário">
+<span
+class="time"
+contenteditable="true">
+Horário
+</span>
 
-<input
-class="editable"
-placeholder="Compromisso">
+<h2 contenteditable="true">
+✨ Novo compromisso
+</h2>
 
-<input
-class="editable"
-placeholder="Mensagem fofinha">
+<p contenteditable="true">
+escreve algo fofinho 💛
+</p>
 
 <button class="delete-btn">
 🗑 apagar
