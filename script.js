@@ -1,235 +1,131 @@
-const agenda =
-document.getElementById("agenda");
+/* -------------------- */
+/* LOGIN */
+/* -------------------- */
 
-const modal =
-document.getElementById("taskModal");
+const CORRECT_PASSWORD = "110426";
 
-const addTaskBtn =
-document.getElementById("addTaskBtn");
+const loginScreen = document.getElementById("loginScreen");
+const passwordInput = document.getElementById("passwordInput");
+const loginBtn = document.getElementById("loginBtn");
+const loginError = document.getElementById("loginError");
+const app = document.getElementById("app");
 
-const closeModal =
-document.getElementById("closeModal");
+loginBtn.onclick = () => {
 
-const saveTaskBtn =
-document.getElementById("saveTask");
+  if(passwordInput.value === CORRECT_PASSWORD){
+    loginScreen.style.display = "none";
+    app.style.display = "block";
+  } else {
+    loginError.innerText = "senha incorreta 💔";
+  }
 
-const deleteTaskBtn =
-document.getElementById("deleteTask");
+};
 
-const taskTime =
-document.getElementById("taskTime");
+/* -------------------- */
+/* APP */
+/* -------------------- */
 
-const taskTitle =
-document.getElementById("taskTitle");
-
-const taskMessage =
-document.getElementById("taskMessage");
-
-const progressFill =
-document.getElementById("progressFill");
-
-const progressText =
-document.getElementById("progressText");
+const agenda = document.getElementById("agenda");
+const modal = document.getElementById("taskModal");
+const addTaskBtn = document.getElementById("addTaskBtn");
+const closeModal = document.getElementById("closeModal");
+const saveTaskBtn = document.getElementById("saveTask");
+const deleteTaskBtn = document.getElementById("deleteTask");
+const taskTime = document.getElementById("taskTime");
+const taskTitle = document.getElementById("taskTitle");
+const taskMessage = document.getElementById("taskMessage");
+const progressFill = document.getElementById("progressFill");
+const progressText = document.getElementById("progressText");
+const dailyReportBtn = document.getElementById("dailyReportBtn");
 
 let currentCard = null;
 
-/* -------------------- */
-/* LOCAL STORAGE */
-/* -------------------- */
+/* STORAGE */
 
 function saveTasks(){
-
-  localStorage.setItem(
-    "kassyaTasks",
-    agenda.innerHTML
-  );
+  localStorage.setItem("kassyaTasks", agenda.innerHTML);
 }
 
 function loadTasks(){
-
-  const saved =
-  localStorage.getItem(
-    "kassyaTasks"
-  );
-
-  if(saved){
-    agenda.innerHTML = saved;
-  }
-
+  const saved = localStorage.getItem("kassyaTasks");
+  if(saved) agenda.innerHTML = saved;
   attachEvents();
 }
 
-/* -------------------- */
 /* MODAL */
-/* -------------------- */
 
 function openModal(card=null){
-
   currentCard = card;
 
   if(card){
-
-    taskTime.value =
-    card.querySelector(".time")
-    ?.innerText || "";
-
-    taskTitle.value =
-    card.querySelector("h2")
-    ?.innerText || "";
-
-    taskMessage.value =
-    card.querySelector("p")
-    ?.innerText || "";
-
-    deleteTaskBtn.style.display =
-    "block";
-
-  }else{
-
+    taskTime.value = card.querySelector(".time")?.innerText || "";
+    taskTitle.value = card.querySelector("h2")?.innerText || "";
+    taskMessage.value = card.querySelector("p")?.innerText || "";
+  } else {
     taskTime.value = "";
     taskTitle.value = "";
     taskMessage.value = "";
-
-    deleteTaskBtn.style.display =
-    "none";
   }
 
-  modal.classList.remove(
-    "hidden"
-  );
+  modal.classList.remove("hidden");
 }
 
 function closeModalWindow(){
-
-  modal.classList.add(
-    "hidden"
-  );
-
+  modal.classList.add("hidden");
   currentCard = null;
 }
 
-/* -------------------- */
 /* CARDS */
-/* -------------------- */
 
-function createCard(
-time,
-title,
-message,
-checked=false
-){
-
+function createCard(time,title,message){
   return `
   <div class="card">
-
-    <input
-      type="checkbox"
-      class="task-checkbox"
-      ${checked ? "checked" : ""}
-    >
-
-    <div class="task-content">
-
-      <span class="time">
-        ${time}
-      </span>
-
-      <h2>
-        ${title}
-      </h2>
-
-      <p>
-        ${message}
-      </p>
-
+    <input type="checkbox" class="task-checkbox">
+    <div>
+      <span class="time">${time}</span>
+      <h2>${title}</h2>
+      <p>${message}</p>
     </div>
-
-  </div>
-  `;
+  </div>`;
 }
 
-/* -------------------- */
-/* EVENTOS */
-/* -------------------- */
+/* EVENTS */
 
 function attachEvents(){
 
-  const cards =
-  document.querySelectorAll(
-    ".card"
-  );
-
-  cards.forEach(card=>{
-
-    card.onclick=(e)=>{
-
-      if(
-      e.target.classList.contains(
-      "task-checkbox"
-      )
-      ) return;
-
+  document.querySelectorAll(".card").forEach(card=>{
+    card.onclick = (e)=>{
+      if(e.target.classList.contains("task-checkbox")) return;
       openModal(card);
     };
   });
 
-  const checkboxes =
-  document.querySelectorAll(
-    ".task-checkbox"
-  );
-
-  checkboxes.forEach(box=>{
-
-    box.addEventListener(
-      "change",
-      ()=>{
-        updateProgress();
-        saveTasks();
-      }
-    );
+  document.querySelectorAll(".task-checkbox").forEach(box=>{
+    box.onchange = () => {
+      updateProgress();
+      saveTasks();
+    };
   });
 
   updateProgress();
 }
 
-saveTaskBtn.onclick=()=>{
+/* SAVE */
 
-  const time =
-  taskTime.value.trim();
+saveTaskBtn.onclick = () => {
 
-  const title =
-  taskTitle.value.trim();
-
-  const message =
-  taskMessage.value.trim();
+  const time = taskTime.value;
+  const title = taskTitle.value;
+  const message = taskMessage.value;
 
   if(!title) return;
 
   if(currentCard){
-
-    currentCard.querySelector(
-      ".time"
-    ).innerText = time;
-
-    currentCard.querySelector(
-      "h2"
-    ).innerText = title;
-
-    currentCard.querySelector(
-      "p"
-    ).innerText = message;
-
-  }else{
-
-    agenda.insertAdjacentHTML(
-      "beforeend",
-      createCard(
-        time,
-        title,
-        message
-      )
-    );
-
+    currentCard.querySelector(".time").innerText = time;
+    currentCard.querySelector("h2").innerText = title;
+    currentCard.querySelector("p").innerText = message;
+  } else {
+    agenda.insertAdjacentHTML("beforeend", createCard(time,title,message));
     attachEvents();
   }
 
@@ -238,157 +134,56 @@ saveTaskBtn.onclick=()=>{
   closeModalWindow();
 };
 
-deleteTaskBtn.onclick=()=>{
-
+deleteTaskBtn.onclick = () => {
   if(currentCard){
-
     currentCard.remove();
-
     saveTasks();
     updateProgress();
   }
-
   closeModalWindow();
 };
 
-addTaskBtn.onclick=()=>{
+addTaskBtn.onclick = () => openModal();
+closeModal.onclick = () => closeModalWindow();
 
-  openModal();
-};
-
-closeModal.onclick=()=>{
-
-  closeModalWindow();
-};
-
-modal.onclick=(e)=>{
-
-  if(e.target===modal){
-    closeModalWindow();
-  }
-};
-
-/* -------------------- */
-/* PROGRESSO */
-/* -------------------- */
+/* PROGRESS */
 
 function updateProgress(){
 
-  const checkboxes =
-  document.querySelectorAll(
-    ".task-checkbox"
-  );
+  const all = document.querySelectorAll(".task-checkbox").length || 1;
+  const done = document.querySelectorAll(".task-checkbox:checked").length;
+  const percent = Math.round((done/all)*100);
 
-  const checked =
-  document.querySelectorAll(
-    ".task-checkbox:checked"
-  ).length;
+  progressFill.style.width = percent + "%";
+  progressText.innerText = percent + "%";
 
-  const total =
-  checkboxes.length || 1;
-
-  const percent =
-  Math.round(
-    (checked/total)*100
-  );
-
-  progressFill.style.width =
-  percent+"%";
-
-  progressText.innerText =
-  percent+"%";
 }
 
-/* -------------------- */
-/* NOTIFICAÇÕES */
-/* -------------------- */
+/* WHATSAPP */
 
-async function askPermission(){
+dailyReportBtn.onclick = () => {
 
-  if(
-    Notification.permission
-    !=="granted"
-  ){
-    await Notification
-    .requestPermission();
-  }
-}
+  const cards = document.querySelectorAll(".card");
 
-askPermission();
+  let report = "🌙 Relatório\n\n";
+  let done = 0;
 
-function sendNotification(text){
+  cards.forEach(card=>{
+    const checked = card.querySelector(".task-checkbox").checked;
+    const title = card.querySelector("h2").innerText;
 
-  if(
-    Notification.permission
-    ==="granted"
-  ){
-    new Notification(
-      "🌙 Dia da Kassya",
-      {
-        body:text
-      }
-    );
-  }
-}
+    if(checked) done++;
 
-const sentNotifications =
-new Set();
-
-setInterval(()=>{
-
-  const now =
-  new Date();
-
-  const current =
-  `${String(
-    now.getHours()
-  ).padStart(2,'0')}:${String(
-    now.getMinutes()
-  ).padStart(2,'0')}`;
-
-  document
-  .querySelectorAll(".card")
-  .forEach(card=>{
-
-    const time =
-    card.querySelector(".time")
-    ?.innerText
-    ?.trim();
-
-    const title =
-    card.querySelector("h2")
-    ?.innerText
-    ?.trim();
-
-    if(
-      !time ||
-      time==="A definir"
-    ) return;
-
-    const key =
-    `${current}-${title}`;
-
-    if(
-      time===current &&
-      !sentNotifications.has(
-        key
-      )
-    ){
-
-      sendNotification(
-        `💛 ${title}`
-      );
-
-      sentNotifications.add(
-        key
-      );
-    }
+    report += `${checked ? "✔" : "✘"} ${title}\n`;
   });
 
-},30000);
+  report += `\n${done}/${cards.length} concluídas 💛`;
 
-/* -------------------- */
+  const url = "https://wa.me/5527988335882?text=" + encodeURIComponent(report);
+
+  window.open(url,"_blank");
+};
+
 /* INIT */
-/* -------------------- */
 
 loadTasks();
