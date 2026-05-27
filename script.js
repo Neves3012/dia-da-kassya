@@ -31,9 +31,6 @@ document.getElementById("progressFill");
 const progressText =
 document.getElementById("progressText");
 
-const dailyReportBtn =
-document.getElementById("dailyReportBtn");
-
 let currentCard = null;
 
 /* -------------------- */
@@ -389,63 +386,6 @@ setInterval(()=>{
   });
 
 },30000);
-
-/* -------------------- */
-/* RELATÓRIO WHATSAPP */
-/* -------------------- */
-
-dailyReportBtn.onclick = () => {
-
-  const cards =
-  document.querySelectorAll(
-    ".card"
-  );
-
-  const total =
-  cards.length;
-
-  let done = 0;
-
-  let report =
-`🌙 Relatório do dia da Kassya
-
-`;
-
-  cards.forEach(card => {
-
-    const checked =
-    card.querySelector(
-      ".task-checkbox"
-    ).checked;
-
-    const title =
-    card.querySelector(
-      "h2"
-    ).innerText.trim();
-
-    if(checked){
-      done++;
-    }
-
-    report +=
-`${checked ? "✔" : "✘"} ${title}
-`;
-  });
-
-  report +=
-`
-✅ ${done}/${total} tarefas concluídas
-
-feito com amor 💛`;
-
-  const whatsappUrl =
-`https://wa.me/5527988335882?text=${encodeURIComponent(report)}`;
-
-  window.open(
-    whatsappUrl,
-    "_blank"
-  );
-};
 
 /* -------------------- */
 /* INIT */
