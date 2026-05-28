@@ -10,22 +10,14 @@ const loginBtn = document.getElementById("loginBtn");
 const loginError = document.getElementById("loginError");
 const app = document.getElementById("app");
 
-/* -------------------- */
-/* LOGIN ACTION */
-/* -------------------- */
-
 loginBtn.onclick = () => {
-
-  if(passwordInput.value === CORRECT_PASSWORD){
+  if (passwordInput.value === CORRECT_PASSWORD) {
     loginScreen.style.display = "none";
     app.style.display = "block";
-
-    // reorganiza ao entrar
     sortTasks();
   } else {
     loginError.innerText = "senha incorreta 💔";
   }
-
 };
 
 /* -------------------- */
@@ -43,23 +35,73 @@ const taskTitle = document.getElementById("taskTitle");
 const taskMessage = document.getElementById("taskMessage");
 const progressFill = document.getElementById("progressFill");
 const progressText = document.getElementById("progressText");
-const dailyReportBtn = document.getElementById("dailyReportBtn");
 
 let currentCard = null;
+
+/* -------------------- */
+/* INPUT DATA/HORA */
+/* -------------------- */
+
+taskTime.placeholder = "hh:mm ou mm/aa";
+taskTime.maxLength = 5;
+
+taskTime.addEventListener("input", () => {
+  let value = taskTime.value.replace(/\D/g, "");
+
+  // horário
+  if (value.length >= 3) {
+    const first2 = parseInt(value.slice(0, 2));
+
+    // se parecer hora -> HH:MM
+    if (first2 <= 23) {
+      value = value.slice(0, 4);
+
+      if (value.length >= 3) {
+        taskTime.value =
+          value.slice(0, 2) + ":" + value.slice(2);
+      } else {
+        taskTime.value = value;
+      }
+
+      return;
+    }
+  }
+
+  // mês/ano -> MM/AA
+  value = value.slice(0, 4);
+
+  if (value.length >= 3) {
+    taskTime.value =
+      value.slice(0, 2) + "/" + value.slice(2);
+  } else {
+    taskTime.value = value;
+  }
+});
+
+function isValidTimeOrDate(value) {
+  const hourRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+  const monthRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+
+  return hourRegex.test(value) ||
+         monthRegex.test(value);
+}
 
 /* -------------------- */
 /* STORAGE */
 /* -------------------- */
 
-function saveTasks(){
-  localStorage.setItem("kassyaTasks", agenda.innerHTML);
+function saveTasks() {
+  localStorage.setItem(
+    "kassyaTasks",
+    agenda.innerHTML
+  );
 }
 
-function loadTasks(){
+function loadTasks() {
+  const saved =
+    localStorage.getItem("kassyaTasks");
 
-  const saved = localStorage.getItem("kassyaTasks");
-
-  if(saved){
+  if (saved) {
     agenda.innerHTML = saved;
   }
 
@@ -71,11 +113,10 @@ function loadTasks(){
 /* MODAL */
 /* -------------------- */
 
-function openModal(card = null){
-
+function openModal(card = null) {
   currentCard = card;
 
-  if(card){
+  if (card) {
     taskTime.value =
       card.querySelector(".time")?.innerText || "";
 
@@ -93,7 +134,7 @@ function openModal(card = null){
   modal.classList.remove("hidden");
 }
 
-function closeModalWindow(){
+function closeModalWindow() {
   modal.classList.add("hidden");
   currentCard = null;
 }
@@ -102,8 +143,7 @@ function closeModalWindow(){
 /* CARD */
 /* -------------------- */
 
-function createCard(time, title, message){
-
+function createCard(time, title, message) {
   return `
     <div class="card">
       <input type="checkbox" class="task-checkbox">
@@ -118,23 +158,76 @@ function createCard(time, title, message){
 }
 
 /* -------------------- */
-/* ORGANIZAR TAREFAS */
+/* SORT */
 /* -------------------- */
 
-function sortTasks(){
+function getSortValue(time) {
+  // HH:MM
+  if (time.includes(":")) {
+    const [h, m] = time.split(":").map(Number);
+    return {
+      type: 0,
+      value: h * 60 + m
+    };
+  }
 
+  // MM/AA
+  if (time.includes("/")) {
+    const [month, year] =
+      time.split("/").map(Number);
+
+    return {
+      type: 1,
+      value: year * 100 + month
+    };
+  }
+
+  return {
+    type: 99,
+    value: 999999
+  };
+}
+
+function sortTasks() {
   const cards =
     [...document.querySelectorAll(".card")];
 
-  const pending =
-    cards.filter(card =>
-      !card.querySelector(".task-checkbox").checked
-    );
+  const pending = cards.filter(
+    card =>
+      !card.querySelector(
+        ".task-checkbox"
+      ).checked
+  );
 
-  const done =
-    cards.filter(card =>
-      card.querySelector(".task-checkbox").checked
-    );
+  const done = cards.filter(
+    card =>
+      card.querySelector(
+        ".task-checkbox"
+      ).checked
+  );
+
+  function sortByDate(a, b) {
+    const timeA =
+      a.querySelector(".time").innerText;
+
+    const timeB =
+      b.querySelector(".time").innerText;
+
+    const aVal =
+      getSortValue(timeA);
+
+    const bVal =
+      getSortValue(timeB);
+
+    if (aVal.type !== bVal.type) {
+      return aVal.type - bVal.type;
+    }
+
+    return aVal.value - bVal.value;
+  }
+
+  pending.sort(sortByDate);
+  done.sort(sortByDate);
 
   agenda.innerHTML = "";
 
@@ -154,52 +247,46 @@ function sortTasks(){
 /* EVENTS */
 /* -------------------- */
 
-function attachEvents(){
+function attachEvents() {
 
-  document.querySelectorAll(".card")
-    .forEach(card=>{
+  document
+    .querySelectorAll(".card")
+    .forEach(card => {
 
-    card.onclick = (e)=>{
+      card.onclick = e => {
+        if (
+          e.target.classList.contains(
+            "task-checkbox"
+          )
+        ) return;
 
-      if(
-        e.target.classList.contains(
-          "task-checkbox"
-        )
-      ) return;
-
-      openModal(card);
-    };
-
-  });
+        openModal(card);
+      };
+    });
 
   document
     .querySelectorAll(".task-checkbox")
-    .forEach(box=>{
+    .forEach(box => {
 
       const card =
         box.closest(".card");
 
-      // visual ao carregar
       card.classList.toggle(
         "done",
         box.checked
       );
 
-      box.onchange = ()=>{
+      box.onchange = () => {
 
-        // cinza/riscado
         card.classList.toggle(
           "done",
           box.checked
         );
 
-        // reorganiza
         sortTasks();
-
         updateProgress();
         saveTasks();
       };
-
     });
 
   updateProgress();
@@ -209,15 +296,30 @@ function attachEvents(){
 /* SAVE */
 /* -------------------- */
 
-saveTaskBtn.onclick = ()=>{
+saveTaskBtn.onclick = () => {
 
-  const time = taskTime.value;
-  const title = taskTitle.value;
-  const message = taskMessage.value;
+  const time =
+    taskTime.value.trim();
 
-  if(!title) return;
+  const title =
+    taskTitle.value.trim();
 
-  if(currentCard){
+  const message =
+    taskMessage.value.trim();
+
+  if (!title) {
+    alert("Digite um título 💛");
+    return;
+  }
+
+  if (time && !isValidTimeOrDate(time)) {
+    alert(
+      "Digite hh:mm ou mm/aa válido 💛"
+    );
+    return;
+  }
+
+  if (currentCard) {
 
     currentCard.querySelector(
       ".time"
@@ -241,13 +343,12 @@ saveTaskBtn.onclick = ()=>{
         message
       )
     );
-
   }
 
   attachEvents();
   sortTasks();
-  saveTasks();
   updateProgress();
+  saveTasks();
   closeModalWindow();
 };
 
@@ -255,9 +356,8 @@ saveTaskBtn.onclick = ()=>{
 /* DELETE */
 /* -------------------- */
 
-deleteTaskBtn.onclick = ()=>{
-
-  if(currentCard){
+deleteTaskBtn.onclick = () => {
+  if (currentCard) {
     currentCard.remove();
     saveTasks();
     updateProgress();
@@ -271,16 +371,16 @@ deleteTaskBtn.onclick = ()=>{
 /* -------------------- */
 
 addTaskBtn.onclick =
-  ()=> openModal();
+  () => openModal();
 
 closeModal.onclick =
-  ()=> closeModalWindow();
+  () => closeModalWindow();
 
 /* -------------------- */
 /* PROGRESS */
 /* -------------------- */
 
-function updateProgress(){
+function updateProgress() {
 
   const all =
     document.querySelectorAll(
@@ -293,7 +393,9 @@ function updateProgress(){
     ).length;
 
   const percent =
-    Math.round((done / all) * 100);
+    Math.round(
+      (done / all) * 100
+    );
 
   progressFill.style.width =
     percent + "%";
@@ -301,53 +403,6 @@ function updateProgress(){
   progressText.innerText =
     percent + "%";
 }
-
-/* -------------------- */
-/* WHATSAPP */
-/* -------------------- */
-
-dailyReportBtn.onclick = ()=>{
-
-  const cards =
-    document.querySelectorAll(
-      ".card"
-    );
-
-  let report =
-    "🌙 Relatório\n\n";
-
-  let done = 0;
-
-  cards.forEach(card=>{
-
-    const checked =
-      card.querySelector(
-        ".task-checkbox"
-      ).checked;
-
-    const title =
-      card.querySelector(
-        "h2"
-      ).innerText;
-
-    if(checked){
-      done++;
-    }
-
-    report +=
-      `${checked ? "✔" : "✘"} ${title}\n`;
-
-  });
-
-  report +=
-    `\n${done}/${cards.length} concluídas 💛`;
-
-  const url =
-    "https://wa.me/5527988335882?text=" +
-    encodeURIComponent(report);
-
-  window.open(url, "_blank");
-};
 
 /* -------------------- */
 /* INIT */
