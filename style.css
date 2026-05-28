@@ -89,6 +89,7 @@ body{
   background:#2b1d18;
   border-radius:999px;
   overflow:hidden;
+  margin-top:10px;
 }
 
 .progress-fill{
@@ -116,17 +117,46 @@ body{
   padding:20px;
   border:1px solid rgba(255,255,255,.08);
   cursor:pointer;
+  transition:.3s;
 }
 
-.card h2{ font-size:1rem; margin-top:6px; }
-.card p{ margin-top:6px; opacity:.7; }
+.card h2{
+  font-size:1rem;
+  margin-top:6px;
+}
 
-.time{ color:#ffcb8f; }
+.card p{
+  margin-top:6px;
+  opacity:.7;
+}
+
+.time{
+  color:#ffcb8f;
+}
 
 .task-checkbox{
   width:24px;
   height:24px;
   margin-top:5px;
+}
+
+/* -------------------- */
+/* TAREFA CONCLUÍDA */
+/* -------------------- */
+
+.card.done{
+  opacity:.45;
+  filter:grayscale(100%);
+}
+
+.card.done .time,
+.card.done h2,
+.card.done p{
+  text-decoration:line-through;
+}
+
+.card.done .task-checkbox{
+  transform:scale(1.05);
 }
 
 /* -------------------- */
@@ -170,7 +200,9 @@ body{
   z-index:999;
 }
 
-.hidden{ display:none; }
+.hidden{
+  display:none;
+}
 
 .modal-card{
   width:100%;
@@ -179,6 +211,7 @@ body{
   border:1px solid rgba(255,255,255,.08);
   border-radius:28px;
   padding:24px;
+  position:relative;
 }
 
 .modal-card input,
@@ -208,8 +241,14 @@ body{
   font-weight:bold;
 }
 
-.save-btn{ background:#d7a15b; }
-.delete-btn{ background:#5a2e2e; color:#fff; }
+.save-btn{
+  background:#d7a15b;
+}
+
+.delete-btn{
+  background:#5a2e2e;
+  color:#fff;
+}
 
 .close-btn{
   position:absolute;
