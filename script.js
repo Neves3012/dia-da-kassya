@@ -48,13 +48,18 @@ function saveTasks(){
 
 function loadTasks(){
   const saved = localStorage.getItem("kassyaTasks");
-  if(saved) agenda.innerHTML = saved;
+
+  if(saved){
+    agenda.innerHTML = saved;
+  }
+
   attachEvents();
 }
 
 /* MODAL */
 
 function openModal(card=null){
+
   currentCard = card;
 
   if(card){
@@ -77,7 +82,7 @@ function closeModalWindow(){
 
 /* CARDS */
 
-function createCard(time,title,message){
+function createCard(time, title, message){
   return `
   <div class="card">
     <input type="checkbox" class="task-checkbox">
@@ -94,17 +99,30 @@ function createCard(time,title,message){
 function attachEvents(){
 
   document.querySelectorAll(".card").forEach(card=>{
+
     card.onclick = (e)=>{
       if(e.target.classList.contains("task-checkbox")) return;
       openModal(card);
     };
+
   });
 
   document.querySelectorAll(".task-checkbox").forEach(box=>{
-    box.onchange = () => {
+
+    const card = box.closest(".card");
+
+    // aplica visual quando carregar
+    card.classList.toggle("done", box.checked);
+
+    box.onchange = ()=>{
+
+      // adiciona/remove aparência de concluída
+      card.classList.toggle("done", box.checked);
+
       updateProgress();
       saveTasks();
     };
+
   });
 
   updateProgress();
@@ -112,7 +130,7 @@ function attachEvents(){
 
 /* SAVE */
 
-saveTaskBtn.onclick = () => {
+saveTaskBtn.onclick = ()=>{
 
   const time = taskTime.value;
   const title = taskTitle.value;
@@ -121,11 +139,18 @@ saveTaskBtn.onclick = () => {
   if(!title) return;
 
   if(currentCard){
+
     currentCard.querySelector(".time").innerText = time;
     currentCard.querySelector("h2").innerText = title;
     currentCard.querySelector("p").innerText = message;
+
   } else {
-    agenda.insertAdjacentHTML("beforeend", createCard(time,title,message));
+
+    agenda.insertAdjacentHTML(
+      "beforeend",
+      createCard(time, title, message)
+    );
+
     attachEvents();
   }
 
@@ -134,34 +159,39 @@ saveTaskBtn.onclick = () => {
   closeModalWindow();
 };
 
-deleteTaskBtn.onclick = () => {
+deleteTaskBtn.onclick = ()=>{
+
   if(currentCard){
     currentCard.remove();
     saveTasks();
     updateProgress();
   }
+
   closeModalWindow();
 };
 
-addTaskBtn.onclick = () => openModal();
-closeModal.onclick = () => closeModalWindow();
+addTaskBtn.onclick = ()=> openModal();
+closeModal.onclick = ()=> closeModalWindow();
 
 /* PROGRESS */
 
 function updateProgress(){
 
-  const all = document.querySelectorAll(".task-checkbox").length || 1;
-  const done = document.querySelectorAll(".task-checkbox:checked").length;
-  const percent = Math.round((done/all)*100);
+  const all =
+    document.querySelectorAll(".task-checkbox").length || 1;
+
+  const done =
+    document.querySelectorAll(".task-checkbox:checked").length;
+
+  const percent = Math.round((done / all) * 100);
 
   progressFill.style.width = percent + "%";
   progressText.innerText = percent + "%";
-
 }
 
 /* WHATSAPP */
 
-dailyReportBtn.onclick = () => {
+dailyReportBtn.onclick = ()=>{
 
   const cards = document.querySelectorAll(".card");
 
@@ -169,19 +199,26 @@ dailyReportBtn.onclick = () => {
   let done = 0;
 
   cards.forEach(card=>{
-    const checked = card.querySelector(".task-checkbox").checked;
-    const title = card.querySelector("h2").innerText;
+
+    const checked =
+      card.querySelector(".task-checkbox").checked;
+
+    const title =
+      card.querySelector("h2").innerText;
 
     if(checked) done++;
 
     report += `${checked ? "✔" : "✘"} ${title}\n`;
   });
 
-  report += `\n${done}/${cards.length} concluídas 💛`;
+  report +=
+    `\n${done}/${cards.length} concluídas 💛`;
 
-  const url = "https://wa.me/5527988335882?text=" + encodeURIComponent(report);
+  const url =
+    "https://wa.me/5527988335882?text=" +
+    encodeURIComponent(report);
 
-  window.open(url,"_blank");
+  window.open(url, "_blank");
 };
 
 /* INIT */
